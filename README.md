@@ -1,3 +1,4 @@
+```
 NAME:
    cluster-agent-tool - Redeploy Rancher Agent Workloads
 
@@ -12,3 +13,4 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --help, -h  show help
+   ```
