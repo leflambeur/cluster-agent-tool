@@ -1,11 +1,11 @@
 package main
 
 import (
+	"cluster-agent-tool/cattle"
 	"fmt"
 	"github.com/urfave/cli"
 	"log"
 	"os"
-	cattle "github.com/leflambeur/cluster-agent-tool/cattlefunc"
 )
 
 func main() {
@@ -79,11 +79,11 @@ func main() {
 				Aliases: []string{"s"},
 				Usage: "Get status of current cattle agent pods",
 				Action: func(c *cli.Context) error{
-					agentstatus, err := cattle.GetStatus(c.String("config"), c.String("v"))
+					status, err := cattle.GetStatus(c.Bool("v"))
 					if err != nil {
 						log.Println(err)
 					}
-					fmt.Println(agentstatus)
+					fmt.Println(status)
 					return err
 				},
 			},
