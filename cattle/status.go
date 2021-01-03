@@ -1,18 +1,15 @@
 package cattle
 
-
 import (
 	"context"
 	"fmt"
 	"strings"
 	"time"
 
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
-
 
 func GetStatus(vb bool) (string, error) {
 	var p string
@@ -33,7 +30,7 @@ func NewRow(rowcount int) string {
 	return res1
 }
 
-func GetPodStatus() (string,error) {
+func GetPodStatus() (string, error) {
 	var ppod string
 	var newline string
 
@@ -61,4 +58,14 @@ func GetPodStatus() (string,error) {
 	}
 	ppod += fmt.Sprintf("\n\nTotal: %d \n", len(pods.Items))
 	return ppod, err
+}
+
+func GetCattleEnvValues() string {
+	var pcattle string
+	cattleNode := GetEnvVars("CATTLE_NODE_NAME")
+	cattleServer := GetEnvVars("CATTLE_URL")
+	cattleCluster := GetClusterID(cattleNode, cattleServer)
+	cattleCAChecksum := GetEnvVars("CATTLE_CA_CHECKSUM")
+	pcattle += fmt.Sprintf("\nNode: %s\nCluster ID: %s\nRancher Server: %s", cattleCluster, cattleServer, cattleCAChecksum)
+	return pcattle
 }
