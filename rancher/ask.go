@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	authTypeToken    = "token"
-	authTypeLocal    = "local"
+	authTypeToken = "token"
+	authTypeLocal = "local"
 )
 
 type userCredentials struct {
@@ -94,4 +94,3 @@ func getTokenAuthCredentials() (string, error) {
 	// TODO: Add validator for token format
 	return token, nil
 }
-

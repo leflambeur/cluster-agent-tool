@@ -13,11 +13,11 @@ import (
 )
 
 type Env struct {
-	Node string
-	Server string
-	AgentCAChecksum string
-	ClusterID string
-	Deployment string
+	Node             string
+	Server           string
+	AgentCAChecksum  string
+	ClusterID        string
+	Deployment       string
 	ServerCAChecksum string
 }
 
@@ -49,7 +49,7 @@ func PodStatus() (string, error) {
 	newline += fmt.Sprintf("|%-41s|%-9s|%-16s|%-16s|", NewRow(41), NewRow(9), NewRow(16), NewRow(16))
 	config, err := rest.InClusterConfig()
 	if err != nil {
-		 panic(err)
+		panic(err)
 	}
 	// creates the clientset
 	clientset, err := kubernetes.NewForConfig(config)
@@ -72,8 +72,8 @@ func PodStatus() (string, error) {
 	return ppod, err
 }
 
-func EnvStatus() (Env, *rancher.Server, error){
-	cattleNode:= GetEnvVar("CATTLE_NODE_NAME")
+func EnvStatus() (Env, *rancher.Server, error) {
+	cattleNode := GetEnvVar("CATTLE_NODE_NAME")
 	cattleServer := GetEnvVar("CATTLE_SERVER")
 	cattleCAChecksum := GetEnvVar("CATTLE_CA_CHECKSUM")
 	s, err := rancher.NewServer(true, cattleServer)
@@ -84,6 +84,6 @@ func EnvStatus() (Env, *rancher.Server, error){
 	cattleDeployment, err := GetDeploymentURL(s, cattleCluster)
 	serverCAChecksum, err := GetServerCAChecksum(s)
 	currCattleEnv := Env{cattleNode, cattleServer, cattleCAChecksum,
-		cattleCluster,  cattleDeployment, serverCAChecksum}
+		cattleCluster, cattleDeployment, serverCAChecksum}
 	return currCattleEnv, s, err
 }
