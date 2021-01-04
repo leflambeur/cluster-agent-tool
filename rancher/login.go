@@ -69,7 +69,7 @@ func DoLogin(loginPostURL, username, password string) (string, error) {
 		// TODO: Figure out the error message from the response object
 		return "", fmt.Errorf("unexpected status code %v, message: TODO", resp.StatusCode)
 	}
-	// TODO: Delete this later
+
 	log.Debugf("Logged in and rancher returned userId result as %+v, token: %v", result.UserID, result.Token)
 	return result.Token, nil
 }

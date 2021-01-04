@@ -14,8 +14,9 @@ import (
 func GetStatus(vb bool) (string, error) {
 	var p string
 	if vb != true {
-		var podStatus, err = GetPodStatus()
-		p += fmt.Sprintf("%s", podStatus)
+		podStatus, err := GetPodStatus()
+		cattleStatus, err := GetCattleEnvValues()
+		p += fmt.Sprintf("%s\n\n%s", podStatus, cattleStatus)
 		return p, err
 	} else {
 		var podStatus, err = GetPodStatus()
@@ -37,12 +38,12 @@ func GetPodStatus() (string, error) {
 	newline += fmt.Sprintf("|%-41s|%-9s|%-16s|%-16s|", NewRow(41), NewRow(9), NewRow(16), NewRow(16))
 	config, err := rest.InClusterConfig()
 	if err != nil {
-		panic(err.Error())
+		 panic(err)
 	}
 	// creates the clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	pods, err := clientset.CoreV1().Pods("cattle-system").List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
@@ -60,12 +61,12 @@ func GetPodStatus() (string, error) {
 	return ppod, err
 }
 
-func GetCattleEnvValues() string {
+func GetCattleEnvValues() (string, error){
 	var pcattle string
 	cattleNode := GetEnvVars("CATTLE_NODE_NAME")
-	cattleServer := GetEnvVars("CATTLE_URL")
-	cattleCluster := GetClusterID(cattleNode, cattleServer)
+	cattleServer := GetEnvVars("CATTLE_SERVER")
+	cattleCluster, err := GetClusterID(cattleNode, cattleServer)
 	cattleCAChecksum := GetEnvVars("CATTLE_CA_CHECKSUM")
 	pcattle += fmt.Sprintf("\nNode: %s\nCluster ID: %s\nRancher Server: %s", cattleCluster, cattleServer, cattleCAChecksum)
-	return pcattle
+	return pcattle, err
 }

@@ -25,17 +25,17 @@ func GetEnvVars(cattleType string) string {
 	return cattleValue
 }
 
-func GetClusterID(cattleNode string, cattleServer string) string {
+func GetClusterID(cattleNode string, cattleServer string) (string, error) {
 	s, err := rancher.NewServer(true, cattleServer)
 	if err != nil {
-		return fmt.Sprintf("%v", err)
+		panic(err)
 	}
 	nodesInfo, err := s.V3Client.Node.List(&types.ListOpts{
 		Filters: map[string]interface{}{"nodeName": cattleNode},
 	})
 	if err != nil {
-		return fmt.Sprintf("%v", err)
+		panic(err)
 	}
 	clusterID := fmt.Sprintf("%v", nodesInfo.Data)
-	return clusterID
+	return clusterID, err
 }

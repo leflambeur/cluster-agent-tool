@@ -25,9 +25,9 @@ type Server struct {
 func NewServer(insecure bool, cattleServer string) (*Server, error) {
 	// TODO: Create a temporary directory to work during the session
 	s := &Server{}
-
 	s.URL = cattleServer
 	if len(s.URL) == 0 {
+		fmt.Println("No Rancher URL Detected!")
 		url, err := askForRancherServerDetails()
 		if err != nil {
 			return nil, fmt.Errorf("error getting server details: %v", err)
