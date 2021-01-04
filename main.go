@@ -21,7 +21,6 @@ func main() {
 					cli.StringFlag{
 						Name:     "token",
 						Usage:    "Rancher API Bearer Token",
-						Required: true,
 					},
 					cli.StringFlag{
 						Name:  "cluster",
@@ -72,14 +71,14 @@ func main() {
 						Usage: "Path to Kubeconfig file",
 					},
 					cli.BoolFlag{
-						Name: "v",
+						Name: "verbose",
 						Usage: "Verbose",
 					},
 				},
 				Aliases: []string{"s"},
 				Usage: "Get status of current cattle agent pods",
 				Action: func(c *cli.Context) error{
-					status, err := cattle.GetStatus(c.Bool("v"))
+					status, err := cattle.PrintStatus(c.Bool("verbose"))
 					if err != nil {
 						log.Println(err)
 					}
