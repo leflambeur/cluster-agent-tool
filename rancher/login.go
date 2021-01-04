@@ -104,9 +104,8 @@ func (s *Server) doLogin() error {
 		if err != nil {
 			return err
 		}
-		log.Infof("Successfully logged in and generated a token for the session")
+		log.Debugf("Successfully logged in and generated a token for the session\n")
 		// TODO: Should we delete the token after the session is done?
-
 		// TODO: Delete this
 		log.Debugf("token: %+v", token)
 		s.Token = token
@@ -125,8 +124,6 @@ func (s *Server) doLogin() error {
 	// Assumption at this point is, the token field is populated,
 	// no matter what authentication mechanism and we work with it
 
-	// TODO:
-	log.Infof("TODO: improve me: checking token")
 	// TODO: Fetch /v3/users?me=true to make sure the token is valid
 	// 		 and also to get the name of the user to personalize the
 	//		 experience.

@@ -1,6 +1,7 @@
 package cattle
 
 import (
+	"cluster-agent-tool/rancher"
 	"context"
 	"fmt"
 	"strings"
@@ -11,16 +12,26 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func GetStatus(vb bool) (string, error) {
+type Env struct {
+	Node string
+	Server string
+	AgentCAChecksum string
+	ClusterID string
+	Deployment string
+	ServerCAChecksum string
+}
+
+func PrintStatus(vb bool) (string, error) {
 	var p string
 	if vb != true {
-		podStatus, err := GetPodStatus()
-		cattleStatus, err := GetCattleEnvValues()
-		p += fmt.Sprintf("%s\n\n%s", podStatus, cattleStatus)
+		podStatus, err := PodStatus()
+		p += fmt.Sprintf("\nAgent Pod Status:\n\n%s\n", podStatus)
 		return p, err
 	} else {
-		var podStatus, err = GetPodStatus()
-		p += fmt.Sprintf("%s", podStatus)
+		podStatus, err := PodStatus()
+		envStatus, s, err := EnvStatus()
+		p += fmt.Sprintf("\nServer: %s\nToken: %s\n\nCluster: %s\nNode: %s\n\nLocal CA Checksum: %s\nRancher CA Checksum: %s\n\nAgent Deployment URL: %s\nAgent Pod Status:\n\n%s\n",
+			envStatus.Server, s.Token, envStatus.ClusterID, envStatus.Node, envStatus.AgentCAChecksum, envStatus.ServerCAChecksum, envStatus.Deployment, podStatus)
 		return p, err
 	}
 }
@@ -31,7 +42,7 @@ func NewRow(rowcount int) string {
 	return res1
 }
 
-func GetPodStatus() (string, error) {
+func PodStatus() (string, error) {
 	var ppod string
 	var newline string
 
@@ -61,12 +72,18 @@ func GetPodStatus() (string, error) {
 	return ppod, err
 }
 
-func GetCattleEnvValues() (string, error){
-	var pcattle string
-	cattleNode := GetEnvVars("CATTLE_NODE_NAME")
-	cattleServer := GetEnvVars("CATTLE_SERVER")
-	cattleCluster, err := GetClusterID(cattleNode, cattleServer)
-	cattleCAChecksum := GetEnvVars("CATTLE_CA_CHECKSUM")
-	pcattle += fmt.Sprintf("\nNode: %s\nCluster ID: %s\nRancher Server: %s", cattleCluster, cattleServer, cattleCAChecksum)
-	return pcattle, err
+func EnvStatus() (Env, *rancher.Server, error){
+	cattleNode:= GetEnvVar("CATTLE_NODE_NAME")
+	cattleServer := GetEnvVar("CATTLE_SERVER")
+	cattleCAChecksum := GetEnvVar("CATTLE_CA_CHECKSUM")
+	s, err := rancher.NewServer(true, cattleServer)
+	if err != nil {
+		panic(err)
+	}
+	cattleCluster, err := GetClusterID(s, cattleNode)
+	cattleDeployment, err := GetDeploymentURL(s, cattleCluster)
+	serverCAChecksum, err := GetServerCAChecksum(s)
+	currCattleEnv := Env{cattleNode, cattleServer, cattleCAChecksum,
+		cattleCluster,  cattleDeployment, serverCAChecksum}
+	return currCattleEnv, s, err
 }

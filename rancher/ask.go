@@ -44,9 +44,9 @@ func askForRancherServerDetails() (string, error) {
 func askForAuthenticationMethod(options []string) (string, error) {
 	selectedAuth := ""
 	q := &survey.Select{
-		Message: "Select authentication method",
+		Message: "Select authentication method (Note: only Token and Local Supported)",
 		Options: options,
-		Help:    "TODO: Select one of the various authentication methods available.",
+		Help:    "TODO: Select one of the various authentication methods available (Note only Token and Local Supported).",
 	}
 	err := survey.AskOne(q, &selectedAuth, survey.WithValidator(survey.Required))
 	if err != nil {
