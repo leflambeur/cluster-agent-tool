@@ -39,7 +39,7 @@ func main() {
 				Usage:   "Gets a copy of the Workload Deployment YAML from Rancher Server",
 				Action: func(c *cli.Context) error {
 					cattleDeployment, err := cattle.GetDeploymentSetup(c.Bool("apply"))
-					if err != nil{
+					if err != nil {
 						return err
 					}
 					fmt.Println(cattleDeployment)

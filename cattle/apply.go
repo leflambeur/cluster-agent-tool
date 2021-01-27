@@ -19,7 +19,7 @@ func (k *KubeCtl) GetPath() (string, error) {
 	whichCmd.Stdout = stdoutBuffer
 	whichCmd.Stderr = stderrBuffer
 	err := whichCmd.Run()
-	if err != nil{
+	if err != nil {
 		return stderrBuffer.String(), err
 	}
 	fmt.Println("Kubectl Found:" + stdoutBuffer.String())
@@ -27,7 +27,7 @@ func (k *KubeCtl) GetPath() (string, error) {
 	return stdoutBuffer.String(), err
 }
 
-func (k *KubeCtl) Apply(arg string)(string, error){
+func (k *KubeCtl) Apply(arg string) (string, error) {
 	if k.Path == "" {
 		path, err := k.GetPath()
 		if err != nil {
@@ -44,7 +44,7 @@ func (k *KubeCtl) Apply(arg string)(string, error){
 	//allArgs := fmt.Sprintf("%s %s", k.Opts, arg)
 
 	//cmd := exec.Command(k.Path, "apply", "-f", arg)
-    fmt.Println(arg)
+	fmt.Println(arg)
 	cmd := exec.Command(k.Path, "apply", "-f", arg)
 	cmd.Stdout = stdoutBuffer
 	cmd.Stderr = stderrBuffer
@@ -58,7 +58,7 @@ func (k *KubeCtl) Apply(arg string)(string, error){
 
 }
 
-func createWorkDir(OutputDirectory string)(string, error){
+func createWorkDir(OutputDirectory string) (string, error) {
 	workingDirectory, err := ioutil.TempDir(OutputDirectory, "deployment-")
 	if err != nil {
 		panic(err)
@@ -70,7 +70,7 @@ func ApplyDeployment(fullPath string) (string, error) {
 	kubeCtl := &KubeCtl{}
 	kubectlApply, err := kubeCtl.Apply(fullPath)
 	pApply := fmt.Sprintf("%v", kubectlApply)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	return pApply, err

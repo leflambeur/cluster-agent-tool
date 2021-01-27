@@ -18,20 +18,20 @@ type WriteCounter struct {
 	Total uint64
 }
 
-func GetDeploymentSetup(apply bool)(string,error){
-   var p string
-   getLogin, s, err := EnvStatus()
-   p += fmt.Sprintf(
-	   "\nServer: %s\nToken: %s\n\nCluster: %s\nNode: %s\n\nLocal CA Checksum: %s\nRancher CA Checksum: %s\n\nAgent Deployment URL: %s\n",
-	   getLogin.Server, s.Token, getLogin.ClusterID, getLogin.Node, getLogin.AgentCAChecksum, getLogin.ServerCAChecksum, getLogin.Deployment)
-   workingDirectory, err := createWorkDir("/tmp")
-   log.Debugf("created working directory: %v", workingDirectory)
-   getDeployment(getLogin.Deployment, workingDirectory, apply)
-   if err != nil {
-   	panic(err)
-   }
-   p += fmt.Sprintf("\n\nFile Created at %s", workingDirectory)
-   return p, err
+func GetDeploymentSetup(apply bool) (string, error) {
+	var p string
+	getLogin, s, err := EnvStatus()
+	p += fmt.Sprintf(
+		"\nServer: %s\nToken: %s\n\nCluster: %s\nNode: %s\n\nLocal CA Checksum: %s\nRancher CA Checksum: %s\n\nAgent Deployment URL: %s\n",
+		getLogin.Server, s.Token, getLogin.ClusterID, getLogin.Node, getLogin.AgentCAChecksum, getLogin.ServerCAChecksum, getLogin.Deployment)
+	workingDirectory, err := createWorkDir("/tmp")
+	log.Debugf("created working directory: %v", workingDirectory)
+	getDeployment(getLogin.Deployment, workingDirectory, apply)
+	if err != nil {
+		panic(err)
+	}
+	p += fmt.Sprintf("\n\nFile Created at %s", workingDirectory)
+	return p, err
 }
 
 func getDeployment(cattleDeployment string, workingDirectory string, apply bool) error {
@@ -48,7 +48,7 @@ func getDeployment(cattleDeployment string, workingDirectory string, apply bool)
 		panic(err)
 	}
 	defer out.Close()
-    counter := &WriteCounter{}
+	counter := &WriteCounter{}
 	_, err = io.Copy(out, io.TeeReader(resp.Body, counter))
 	if err != nil {
 		panic(err)
@@ -64,7 +64,7 @@ func getDeployment(cattleDeployment string, workingDirectory string, apply bool)
 		kubectlApply, err := ApplyDeployment(fullPath)
 		fmt.Println(kubectlApply)
 		fmt.Println("Apply was True")
-		if err != nil{
+		if err != nil {
 			panic(err)
 		}
 	}
@@ -132,4 +132,3 @@ func getServerCAChecksum(s *rancher.Server) (string, error) {
 	}
 	return "No Checksum!", err
 }
-
