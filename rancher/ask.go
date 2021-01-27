@@ -2,9 +2,10 @@ package rancher
 
 import (
 	"fmt"
+	"net/url"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/rancher/log"
-	"net/url"
 )
 
 const (

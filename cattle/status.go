@@ -1,12 +1,12 @@
 package cattle
 
 import (
-	"cluster-agent-tool/rancher"
 	"context"
 	"fmt"
 	"strings"
 	"time"
 
+	"github.com/leflambeur/cluster-agent-tool/rancher"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
