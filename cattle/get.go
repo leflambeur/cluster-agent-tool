@@ -1,17 +1,18 @@
 package cattle
 
 import (
-	"cluster-agent-tool/rancher"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/dustin/go-humanize"
-	"github.com/rancher/log"
-	"github.com/rancher/norman/types"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/dustin/go-humanize"
+	"github.com/leflambeur/cluster-agent-tool/rancher"
+	"github.com/rancher/log"
+	"github.com/rancher/norman/types"
 )
 
 type WriteCounter struct {

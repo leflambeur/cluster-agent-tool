@@ -1,11 +1,12 @@
 package main
 
 import (
-	"cluster-agent-tool/cattle"
 	"fmt"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	"github.com/leflambeur/cluster-agent-tool/cattle"
+	"github.com/urfave/cli"
 )
 
 func main() {
