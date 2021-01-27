@@ -1,18 +1,15 @@
 package cattle
 
-
 import (
 	"context"
 	"fmt"
 	"strings"
 	"time"
 
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
-
 
 func GetStatus(vb bool) (string, error) {
 	var p string
@@ -33,7 +30,7 @@ func NewRow(rowcount int) string {
 	return res1
 }
 
-func GetPodStatus() (string,error) {
+func GetPodStatus() (string, error) {
 	var ppod string
 	var newline string
 

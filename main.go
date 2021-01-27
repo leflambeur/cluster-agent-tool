@@ -1,11 +1,12 @@
 package main
 
 import (
-	"cluster-agent-tool/cattle"
 	"fmt"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	"github.com/leflambeur/cluster-agent-tool/cattle"
+	"github.com/urfave/cli"
 )
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 						Usage: "Rancher Server URL - https://<rancher>.com",
 					},
 					cli.BoolFlag{
-						Name: "apply",
+						Name:  "apply",
 						Usage: "Set if you would like to automatically apply the updated Workload YAML",
 					},
 				},
@@ -49,17 +50,17 @@ func main() {
 						Name:      "deployment",
 						TakesFile: true,
 						Usage:     "Path to Deployment File",
-						Required: true,
+						Required:  true,
 					},
 					cli.StringFlag{
-						Name: "config",
+						Name:      "config",
 						TakesFile: true,
-						Usage: "Path to Kubeconfig file",
+						Usage:     "Path to Kubeconfig file",
 					},
 				},
 				Aliases: []string{"a"},
-				Usage: "Apply a copy of a Rancher Agent Workload Deployment YAML",
-				Action: func(c *cli.Context) error{
+				Usage:   "Apply a copy of a Rancher Agent Workload Deployment YAML",
+				Action: func(c *cli.Context) error {
 					return nil
 				},
 			},
@@ -67,18 +68,18 @@ func main() {
 				Name: "status",
 				Flags: []cli.Flag{
 					cli.StringFlag{
-						Name: "config",
+						Name:      "config",
 						TakesFile: true,
-						Usage: "Path to Kubeconfig file",
+						Usage:     "Path to Kubeconfig file",
 					},
 					cli.BoolFlag{
-						Name: "v",
+						Name:  "v",
 						Usage: "Verbose",
 					},
 				},
 				Aliases: []string{"s"},
-				Usage: "Get status of current cattle agent pods",
-				Action: func(c *cli.Context) error{
+				Usage:   "Get status of current cattle agent pods",
+				Action: func(c *cli.Context) error {
 					status, err := cattle.GetStatus(c.Bool("v"))
 					if err != nil {
 						log.Println(err)
