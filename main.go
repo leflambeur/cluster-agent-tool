@@ -38,7 +38,7 @@ func main() {
 				Aliases: []string{"g"},
 				Usage:   "Gets a copy of the Workload Deployment YAML from Rancher Server",
 				Action: func(c *cli.Context) error {
-					cattleDeployment, err := cattle.GetDeploymentSetup()
+					cattleDeployment, err := cattle.GetDeploymentSetup(c.Bool("apply"))
 					if err != nil{
 						return err
 					}
@@ -64,7 +64,9 @@ func main() {
 				Aliases: []string{"a"},
 				Usage:   "Apply a copy of a Rancher Agent Workload Deployment YAML",
 				Action: func(c *cli.Context) error {
-					return nil
+					apply, err := cattle.ApplyDeployment(c.String("deployment"))
+					fmt.Println(apply)
+					return err
 				},
 			},
 			{

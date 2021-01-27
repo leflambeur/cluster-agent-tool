@@ -73,16 +73,16 @@ func PodStatus() (string, error) {
 }
 
 func EnvStatus() (Env, *rancher.Server, error) {
-	cattleNode := GetEnvVar("CATTLE_NODE_NAME")
-	cattleServer := GetEnvVar("CATTLE_SERVER")
-	cattleCAChecksum := GetEnvVar("CATTLE_CA_CHECKSUM")
+	cattleNode := getEnvVar("CATTLE_NODE_NAME")
+	cattleServer := getEnvVar("CATTLE_SERVER")
+	cattleCAChecksum := getEnvVar("CATTLE_CA_CHECKSUM")
 	s, err := rancher.NewServer(true, cattleServer)
 	if err != nil {
 		panic(err)
 	}
-	cattleCluster, err := GetClusterID(s, cattleNode)
-	cattleDeployment, err := GetDeploymentURL(s, cattleCluster)
-	serverCAChecksum, err := GetServerCAChecksum(s)
+	cattleCluster, err := getClusterID(s, cattleNode)
+	cattleDeployment, err := getDeploymentURL(s, cattleCluster)
+	serverCAChecksum, err := getServerCAChecksum(s)
 	currCattleEnv := Env{cattleNode, cattleServer, cattleCAChecksum,
 		cattleCluster, cattleDeployment, serverCAChecksum}
 	return currCattleEnv, s, err

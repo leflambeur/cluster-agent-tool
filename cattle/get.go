@@ -18,7 +18,7 @@ type WriteCounter struct {
 	Total uint64
 }
 
-func GetDeploymentSetup()(string,error){
+func GetDeploymentSetup(apply bool)(string,error){
    var p string
    getLogin, s, err := EnvStatus()
    p += fmt.Sprintf(
@@ -26,7 +26,7 @@ func GetDeploymentSetup()(string,error){
 	   getLogin.Server, s.Token, getLogin.ClusterID, getLogin.Node, getLogin.AgentCAChecksum, getLogin.ServerCAChecksum, getLogin.Deployment)
    workingDirectory, err := createWorkDir("/tmp")
    log.Debugf("created working directory: %v", workingDirectory)
-   GetDeployment(getLogin.Deployment, workingDirectory)
+   getDeployment(getLogin.Deployment, workingDirectory, apply)
    if err != nil {
    	panic(err)
    }
@@ -34,7 +34,7 @@ func GetDeploymentSetup()(string,error){
    return p, err
 }
 
-func GetDeployment(cattleDeployment string, workingDirectory string) error {
+func getDeployment(cattleDeployment string, workingDirectory string, apply bool) error {
 	fullPath := fmt.Sprintf("%s/deployment.yaml", workingDirectory)
 	fmt.Println()
 	resp, err := http.Get(cattleDeployment)
@@ -60,17 +60,25 @@ func GetDeployment(cattleDeployment string, workingDirectory string) error {
 		return err
 	}
 
+	if apply == true {
+		kubectlApply, err := ApplyDeployment(fullPath)
+		fmt.Println(kubectlApply)
+		fmt.Println("Apply was True")
+		if err != nil{
+			panic(err)
+		}
+	}
 	return err
 }
 
 func (wc *WriteCounter) Write(p []byte) (int, error) {
 	n := len(p)
 	wc.Total += uint64(n)
-	wc.PrintProgress()
+	wc.printProgress()
 	return n, nil
 }
 
-func (wc WriteCounter) PrintProgress() {
+func (wc WriteCounter) printProgress() {
 	// Clear the line by using a character return to go back to the start and remove
 	// the remaining characters by filling it with spaces
 	fmt.Printf("\r%s", strings.Repeat(" ", 50))
@@ -80,12 +88,12 @@ func (wc WriteCounter) PrintProgress() {
 	fmt.Printf("\rDownloading... %s complete", humanize.Bytes(wc.Total))
 }
 
-func GetEnvVar(cattleType string) string {
+func getEnvVar(cattleType string) string {
 	cattleValue := os.Getenv(cattleType)
 	return cattleValue
 }
 
-func GetClusterID(s *rancher.Server, cattleNode string) (string, error) {
+func getClusterID(s *rancher.Server, cattleNode string) (string, error) {
 
 	nodesInfo, err := s.V3Client.Node.List(&types.ListOpts{
 		Filters: map[string]interface{}{"nodeName": cattleNode},
@@ -97,7 +105,7 @@ func GetClusterID(s *rancher.Server, cattleNode string) (string, error) {
 	return clusterID, err
 }
 
-func GetDeploymentURL(s *rancher.Server, cattleCluster string) (string, error) {
+func getDeploymentURL(s *rancher.Server, cattleCluster string) (string, error) {
 	cattleDeployment, err := s.V3Client.ClusterRegistrationToken.List(&types.ListOpts{
 		Filters: map[string]interface{}{"clusterID": cattleCluster},
 	})
@@ -110,7 +118,7 @@ func GetDeploymentURL(s *rancher.Server, cattleCluster string) (string, error) {
 	return pDeployment, err
 }
 
-func GetServerCAChecksum(s *rancher.Server) (string, error) {
+func getServerCAChecksum(s *rancher.Server) (string, error) {
 	serverCASetting, err := s.V3Client.Setting.List(&types.ListOpts{
 		Filters: map[string]interface{}{"name": "cacerts"},
 	})
